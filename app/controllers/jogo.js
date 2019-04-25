@@ -1,9 +1,16 @@
+const mongoose = require("mongoose")
+const Jogo = mongoose.model("jogos")
+const Usuario = mongoose.model("usuarios")
 module.exports.jogo = function(application, req, res){
-    if(req.session.autorizado){
-        res.render("jogo", {img_casa: req.session.casa})
+    if(!req.session.autorizado){
+        res.send("Usuário precisa fazer login")
         return
     }
-    res.send("Usuário precisa fazer login")
+    Usuario.findOne({usuario: req.session.usuario})
+    .populate("jogo")
+    .then((usuario)=> {
+        res.render("jogo", {usuario: usuario})    
+    })
 }
 
 module.exports.sair = function(application, req, res) {
