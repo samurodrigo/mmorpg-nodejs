@@ -1,5 +1,6 @@
 const mongoose = require("mongoose")
 const Usuario = mongoose.model("usuarios")
+const Jogo = mongoose.model("jogos")
 module.exports.cadastro = function(application, req, res){
     res.render("cadastro", {erros: null, dadosForm: {}})
 }
@@ -18,13 +19,25 @@ module.exports.cadastrar = function(application, req, res){
         res.render("cadastro", {erros: erros, dadosForm: dadosForm})
         return
     }
-    new Usuario(dadosForm)
+    let usuario = new Usuario(dadosForm)
+
+    usuario
     .save()
-    .then(() => {
-        console.log("Usuário adicionado com sucesso!")
+    .then((user) => {
+        let jogo = new Jogo({
+            usuario: user._id
+        })
+        .save()
+        .then((jogo) => {   
+            usuario._id = user._id         
+            usuario.jogo = jogo._id
+            usuario.save().then(()=>{
+                console.log("Usuário adicionado com sucesso!")
+                res.redirect("/")
+            })
+        })        
     })
     .catch((error) => {
         console.log(error)
     })
-    res.send("Podemos cadastrar")
 }
