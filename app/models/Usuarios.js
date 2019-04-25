@@ -16,6 +16,10 @@ const UsuarioSchema = mongoose.Schema({
     casa: {
         type: String,
         require: true
+    },
+    jogo: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "jogos"
     }
 })
 mongoose.model("usuarios", UsuarioSchema)
