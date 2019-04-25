@@ -1,29 +1,35 @@
 const mongoose = require("mongoose")
 
 const JogoSchema = mongoose.Schema({
-    modela: {
+    moeda: {
         type: Number,
-        require: true
+        require: true,
+        default: 50
     },
     suditos: {
         type: Number,
-        require: true
+        require: true,
+        default: 0
     },
     temor: {
         type: Number,
-        require: true
+        require: true,
+        default: Math.floor(Math.random() * 1000)
     },
     sabedoria: {
         type: Number,
-        require: true
+        require: true,
+        default: Math.floor(Math.random() * 1000)
     },
     comercio: {
         type:Number,
-        require: true
+        require: true,
+        default: Math.floor(Math.random() * 1000)
     },
     magia: {
         type: Number,
-        require: true
+        require: true,
+        default: Math.floor(Math.random() * 1000)
     },
     usuario: {
         type: mongoose.Schema.Types.ObjectId,
