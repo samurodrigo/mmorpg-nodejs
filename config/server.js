@@ -13,6 +13,9 @@ var expressValidator = require('express-validator');
 // importar o módulo express-session
 var expressSession = require("express-session");
 
+// importa connect flash
+var flash = require("connect-flash")
+
 /* iniciar o objeto do express */
 var app = express();
 
@@ -35,6 +38,15 @@ app.use(expressSession({
 	resave: false,// faz com que a sessão seja regravada no servidor, mesmo nao tendo alteração
 	saveUninitialized: false // cria uma sessão nova sempre que a mesma for modificada
 }))
+
+app.use(flash())
+
+// Middleware
+app.use((req, res, next) => {
+	res.locals.error_msg = req.flash("error_msg")
+	res.locals.success_msg = req.flash("success_msg")
+	next()
+})
 
 /* efetua o autoload das rotas, dos models e dos controllers para o objeto app */
 consign()

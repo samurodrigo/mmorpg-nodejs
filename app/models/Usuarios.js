@@ -20,6 +20,10 @@ const UsuarioSchema = mongoose.Schema({
     jogo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "jogos"
-    }
+    },
+    acoes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "acoes" 
+    }]
 })
 mongoose.model("usuarios", UsuarioSchema)

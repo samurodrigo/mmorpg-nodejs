@@ -27,6 +27,24 @@
 		</nav>
 
 	    <div class="container">
+			<% if(error_msg && error_msg.length) { %>
+					<div class="alert alert-danger" class="validacao">
+					<ul>
+						<% for(var i = 0; i < error_msg.length; i++) {	%>
+							<li>						
+								<%= error_msg[i].msg %>
+							</li>
+						
+						<% } %>
+					</ul>
+					</div>
+					 <% } %>
+					 
+					 <% if(success_msg && success_msg.length) { %>
+					<div class="alert alert-info" class="validacao">
+						<%= success_msg %>
+					</div>
+ 					<% } %>
 	    	
 			<div class="row">
 	    		<div class="col-sm-3 casa">
@@ -61,7 +79,10 @@
 			<div class="row">
 				<div class="col-sm-3"></div>
 				<div class="col-sm-9">
-					<div class="acoes"></div>					
+					<div class="acoes" id="acoes">
+						Senhor, o que deseja fazer hoje?
+					
+					</div>	
 				</div>
 			</div>
 			
@@ -72,12 +93,12 @@
 			
 				<div class="row">
 					<div class="col-sm-1">
-						<img src="images/outros/suditos.jpg" title="Aldeões" alt="Aldeões"/>
-                        <span><%=usuario.jogo.suditos%></span>
+						<img src="images/outros/suditos.jpg" title="Aldeões" alt="Aldeões" id="btn-suditos"/>
+						<span><%=usuario.jogo.suditos%></span>
 					</div>
 					
 					<div class="col-sm-1">
-						<img src="images/outros/pergaminho.jpg" title="Pergaminhos" alt="Pergaminhos"/>
+						<img src="images/outros/pergaminho.jpg" title="Pergaminhos" alt="Pergaminhos" id="btn-pergaminho"/>
 					</div>
 					
 					<div class="col-sm-8"></div>
@@ -90,5 +111,33 @@
 				</div>
 			</div>
 		</div>
+
+		<script>
+			$("#btn-suditos").click(function(){
+				removerErrosValidacao()
+				$.ajax({
+					url: "/suditos",
+					method:"GET",
+					success: function(data){
+						$("#acoes").html(data);
+					}
+				})
+			})
+
+			$("#btn-pergaminho").click(function(){
+				removerErrosValidacao()
+				$.ajax({
+					url: "/pergaminhos",
+					method:"GET",
+					success: function(data){
+						$("#acoes").html(data);						
+					}
+				})
+			})
+
+			function removerErrosValidacao(){
+				$(".valildacao").remove()
+			}
+		</script>
 	</body>
 </html>

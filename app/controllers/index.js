@@ -23,6 +23,7 @@ module.exports.autenticar = function(application, req, res){
         if(usuario) {
             req.session.autorizado = true
             req.session.usuario = usuario.usuario
+            req.session.idUsuario = usuario._id
             req.session.casa = usuario.casa
             res.redirect("/jogo")
         }else{
