@@ -9,7 +9,7 @@ const JogoSchema = mongoose.Schema({
     suditos: {
         type: Number,
         require: true,
-        default: 0
+        default: 20
     },
     temor: {
         type: Number,

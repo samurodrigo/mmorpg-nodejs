@@ -65,10 +65,6 @@
 	padding:15px;
 }
 
-.acoes span{
-	color: #333333;
-}
-
 #pergaminhos{
 	max-height: 180px;
 	overflow: auto;

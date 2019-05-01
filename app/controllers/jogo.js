@@ -4,7 +4,8 @@ const Usuario = mongoose.model("usuarios")
 const Acao = mongoose.model("acoes")
 module.exports.jogo = function(application, req, res){
     if(!req.session.autorizado){
-        res.send("Usuário precisa fazer login")
+        req.flash("error_msg", "Senhor, por favor, qual o seu usuário e senha?")
+        res.redirect("/")
         return
     }
     Usuario.findOne({usuario: req.session.usuario})
@@ -25,14 +26,25 @@ module.exports.suditos = function(application, req, res) {
 }
 
 module.exports.pergaminhos = function(application, req, res) {
-    res.render("pergaminhos")   
+    if(!req.session.autorizado){
+        res.send("Usuário precisa fazer login")
+        return
+    }  
+    Acao.find({usuario: req.session.idUsuario, acaoTerminaEm: {
+        $gt: new Date().getTime()
+    }}).then(function(acoes){
+        res.render('pergaminhos', {acoes: acoes})
+    })
+    .catch(error => {
+        console.log(error)
+    })
 }
 
 module.exports.ordenarAcaoSudito = function(application, req, res) {
     let acao = req.body
     
-    req.assert("acao", "Ação deve ser informada").notEmpty()
-    req.assert("quantidade", "Quantidade deve ser informada").notEmpty()
+    req.assert("acao", "Senhor, qual é sua ordem?").notEmpty()
+    req.assert("quantidade", "Senhor, qual a quantidade de aldeões?").notEmpty()
 
     var erros = req.validationErrors()
 
@@ -45,24 +57,50 @@ module.exports.ordenarAcaoSudito = function(application, req, res) {
     
     let time = null
     let date = new Date()
-    switch(acao.acao){
-        case 1: time = 1 * 60 * 60000 
-        case 2: time = 2 * 60 * 60000
-        case 3: time = 5 * 60 * 60000
-        case 4: time = 5 * 60 * 60000
+    let moedas = 0
+    switch(parseInt(acao.acao)){
+        case 1: 
+            time = 1 * 60 * 60000; 
+            moedas = -2 * acao.quantidade
+            break;
+        case 2: 
+            time = 2 * 60 * 60000;
+            moedas = -3  * acao.quantidade
+            break;
+        case 3:
+        case 4: 
+            time = 5 * 60 * 60000;
+            moedas = -1  * acao.quantidade
+            break;
     }
+
+
     acao.acaoTerminaEm = date.getTime() + time
     acao.usuario = req.session.idUsuario
     new Acao(acao).save().then(function(a) {
-        console.log(a)
-        req.flash("success_msg", "Ação gravada com sucesso!")
-        res.redirect("/jogo")
+        Jogo.updateOne({usuario: req.session.idUsuario}, {$inc: {
+            moeda: moedas,
+            suditos: (acao.quantidade * -1)
+        }}).then(result => {
+            Jogo.find({usuario: req.session.idUsuario}).then(jogo => {
+                console.log(jogo)
+                req.flash("success_msg", "Senhor, a ação foi executada com sucesso!")
+                res.redirect("/jogo")
+            })
+            
+        })        
     })
     .catch((error) => {
         console.log(error)
-        req.flash("error_msg", ["Não foi possível salvar a ação"])
+        req.flash("error_msg", ["Senhor, clamo por misericórdia, não foi possível cumprir a ordem"])
+        res.redirect("/jogo")
+    })   
+}
+module.exports.revogarAcao = function(application, req, res){
+    let query = req.query
+    Acao.deleteOne({_id: query.id}).then((result)=> {
+        console.log(result)
+        req.flash("success_msg", "Senhor, a ação foi removida com sucesso!")
         res.redirect("/jogo")
     })
-    
-    
 }

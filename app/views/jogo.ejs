@@ -28,7 +28,7 @@
 
 	    <div class="container">
 			<% if(error_msg && error_msg.length) { %>
-					<div class="alert alert-danger" class="validacao">
+					<div class="alert alert-danger validacao">
 					<ul>
 						<% for(var i = 0; i < error_msg.length; i++) {	%>
 							<li>						
@@ -41,7 +41,7 @@
 					 <% } %>
 					 
 					 <% if(success_msg && success_msg.length) { %>
-					<div class="alert alert-info" class="validacao">
+					<div class="alert alert-info validacao">
 						<%= success_msg %>
 					</div>
  					<% } %>
@@ -80,8 +80,7 @@
 				<div class="col-sm-3"></div>
 				<div class="col-sm-9">
 					<div class="acoes" id="acoes">
-						Senhor, o que deseja fazer hoje?
-					
+						Senhor, o que deseja fazer hoje?					
 					</div>	
 				</div>
 			</div>
@@ -130,14 +129,45 @@
 					url: "/pergaminhos",
 					method:"GET",
 					success: function(data){
-						$("#acoes").html(data);						
+                        $("#acoes").html(data);	
+                        clearInterval(interval);
+                        iniciaContador()					
 					}
 				})
 			})
 
 			function removerErrosValidacao(){
-				$(".valildacao").remove()
-			}
+				$(".validacao").remove()
+            }
+            var interval = null;
+            function iniciaContador(){
+                interval = setInterval(() => {
+                    var t = new Date()
+                    $(".tempoRestante").each(function(){
+                        var tempo = parseInt($(this).html())
+                        $(this).html(--tempo)
+                        if(tempo < 0){
+                            removeItem(this)
+                        }
+
+                    })
+                }, 1000);
+            }
+
+            function removeItem(item){
+                clearInterval(interval)
+                var parent = $(item).parents(".acaoExecutando").eq(0)
+                $(item).html("concluído")
+                $(item)
+                    .parents("small")
+                    .html("concluído")
+                    .parents(".acaoExecutando")
+                    .eq(0)
+                    .addClass("text-primary")
+                setTimeout(() => {
+                    parent.remove()
+                }, 4000);
+            }
 		</script>
 	</body>
 </html>

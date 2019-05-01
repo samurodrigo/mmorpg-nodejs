@@ -14,5 +14,8 @@ module.exports = function(application){
 	});
 	application.post('/ordenarAcaoSudito', function(req, res){
 		application.app.controllers.jogo.ordenarAcaoSudito(application,req, res)
-	});
+    });
+    application.get('/revogarAcao', function(req, res){
+        application.app.controllers.jogo.revogarAcao(application,req, res)
+    })
 }

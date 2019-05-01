@@ -32,12 +32,15 @@ module.exports.cadastrar = function(application, req, res){
             usuario._id = user._id         
             usuario.jogo = jogo._id
             usuario.save().then(()=>{
-                console.log("Usuário adicionado com sucesso!")
-                res.redirect("/")
+                res.redirect("/cadastroRealizado")
             })
         })        
     })
     .catch((error) => {
         console.log(error)
     })
+}
+
+module.exports.cadastroRealizado = function(appllication, req, res){
+    res.render("cadastroRealizado")
 }
