@@ -82,16 +82,11 @@ module.exports.ordenarAcaoSudito = function(application, req, res) {
             moeda: moedas,
             suditos: (acao.quantidade * -1)
         }}).then(result => {
-            Jogo.find({usuario: req.session.idUsuario}).then(jogo => {
-                console.log(jogo)
-                req.flash("success_msg", "Senhor, a ação foi executada com sucesso!")
-                res.redirect("/jogo")
-            })
-            
+            req.flash("success_msg", "Senhor, a ação foi executada com sucesso!")
+            res.redirect("/jogo")            
         })        
     })
     .catch((error) => {
-        console.log(error)
         req.flash("error_msg", ["Senhor, clamo por misericórdia, não foi possível cumprir a ordem"])
         res.redirect("/jogo")
     })   
@@ -99,7 +94,6 @@ module.exports.ordenarAcaoSudito = function(application, req, res) {
 module.exports.revogarAcao = function(application, req, res){
     let query = req.query
     Acao.deleteOne({_id: query.id}).then((result)=> {
-        console.log(result)
         req.flash("success_msg", "Senhor, a ação foi removida com sucesso!")
         res.redirect("/jogo")
     })
