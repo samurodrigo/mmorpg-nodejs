@@ -1,6 +1,7 @@
 const mongoose = require("mongoose")
 const Usuario = mongoose.model("usuarios")
 const Jogo = mongoose.model("jogos")
+const crypto = require("crypto")
 module.exports.cadastro = function(application, req, res){
     res.render("cadastro", {erros: null, dadosForm: {}})
 }
@@ -20,7 +21,7 @@ module.exports.cadastrar = function(application, req, res){
         return
     }
     let usuario = new Usuario(dadosForm)
-
+    usuario.senha = crypto.createHash("md5").update(usuario.senha).digest("hex")
     usuario
     .save()
     .then((user) => {

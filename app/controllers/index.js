@@ -1,6 +1,7 @@
 const mongoose = require("mongoose")
 
 const Usuario = mongoose.model("usuarios")
+const crypto = require("crypto")
 
 module.exports.index = function(application, req, res){
     res.render("index", {erros: null})
@@ -18,8 +19,8 @@ module.exports.autenticar = function(application, req, res){
         res.render("index", {erros: erros})
         return
     }
-
-    Usuario.findOne({usuario: dadosForm.usuario, senha: dadosForm.senha}).then(usuario => {
+    let senha = crypto.createHash("md5").update(dadosForm.senha).digest("hex")
+    Usuario.findOne({usuario: dadosForm.usuario, senha: senha}).then(usuario => {
         if(usuario) {
             req.session.autorizado = true
             req.session.usuario = usuario.usuario
